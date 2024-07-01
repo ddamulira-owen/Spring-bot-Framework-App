@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      url: mongodb+srv://owen:<Rash10/cr7>@owen.a4c8ukk.mongodb.net/?retryWrites=true&w=majority&appName=owen
+        database:Task
