@@ -2,6 +2,7 @@ package com.example.one.service;
 
 import com.example.one.model.Task;
 import com.example.one.repository.TaskRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,50 +10,68 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class TaskService {
 
     @Autowired
     private TaskRepository repository;
 
-    //CRUD
-    public Task addTask (Task task){
+    // CREATE
+    public Task addTask(Task task) {
         task.setTaskId(UUID.randomUUID().toString().split("_")[0]);
-        return repository.save(task);
+        Task savedTask = repository.save(task);
+        log.info("Saved task: {}", savedTask);
+        return savedTask;
     }
 
-    //CREATE
-    public List<Task> findAllTasks(){
-        return repository.findAll();
+    // READ ALL
+    public List<Task> findAllTasks() {
+        List<Task> tasks = repository.findAll();
+        tasks.forEach(t -> log.info("Found task: {}", t));
+        return tasks;
     }
 
-    //READ
-    public Task getTaskByTaskId (String taskId){
-        return repository.findById(taskId).get();
+    // READ BY ID
+    public Task getTaskByTaskId(String taskId) {
+        Task task = repository.findById(taskId).orElse(null);
+        log.info("Retrieved task: {}", task);
+        return task;
     }
 
-    public List<Task> getTaskBySeverity( int severity){
-        return repository.findBySeverity(severity);
+    // READ BY SEVERITY
+    public List<Task> getTaskBySeverity(int severity) {
+        List<Task> tasks = repository.findBySeverity(severity);
+        tasks.forEach(t -> log.info("Found task by severity {}: {}", severity, t));
+        return tasks;
     }
 
-
-    public List<Task> getTaskByAssignee(String assignee){
-    return repository.getTaskByAssignee(assignee);
+    // READ BY ASSIGNEE
+    public List<Task> getTaskByAssignee(String assignee) {
+        List<Task> tasks = repository.getTaskByAssignee(assignee);
+        tasks.forEach(t -> log.info("Found task by assignee {}: {}", assignee, t));
+        return tasks;
     }
 
-    //UPDATE
-    public Task updateTask(Task taskRequest){
-        Task existingTask=repository.findById(taskRequest.getTaskId()).get();
-        existingTask.setAssignee(taskRequest.getAssignee());
-        existingTask.setSeverity(taskRequest.getSeverity());
-        existingTask.setDescription(taskRequest.getDescription());
-        existingTask.setStoryPoint(taskRequest.getStoryPoint());
-        return repository.save(existingTask);
-
+    // UPDATE
+    public Task updateTask(Task taskRequest) {
+        Task existingTask = repository.findById(taskRequest.getTaskId()).orElse(null);
+        if (existingTask != null) {
+            existingTask.setAssignee(taskRequest.getAssignee());
+            existingTask.setSeverity(taskRequest.getSeverity());
+            existingTask.setDescription(taskRequest.getDescription());
+            existingTask.setStoryPoint(taskRequest.getStoryPoint());
+            Task updatedTask = repository.save(existingTask);
+            log.info("Updated task: {}", updatedTask);
+            return updatedTask;
+        }
+        log.warn("Task not found with id: {}", taskRequest.getTaskId());
+        return null;
     }
 
-    public String deleteTask (String taskId){
+    // DELETE
+    public String deleteTask(String taskId) {
         repository.deleteById(taskId);
-        return taskId+"taskd deleted from dashborad";
+        log.info("Deleted task with id: {}", taskId);
+        return taskId + " task deleted from dashboard";
     }
-
 }
