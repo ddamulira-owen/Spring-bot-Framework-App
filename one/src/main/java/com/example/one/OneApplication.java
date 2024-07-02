@@ -21,15 +21,7 @@ public class OneApplication {
 		return args -> {
 			log.info("Application started");
 
-			// Create a sample task for demonstration purposes
-			Task sampleTask = new Task();
-			sampleTask.setAssignee("John Doe");
-			sampleTask.setSeverity(5);
-			sampleTask.setDescription("Sample Task");
-			sampleTask.setStoryPoint(3);
 
-			taskService.addTask(sampleTask);
-			taskService.findAllTasks();
 		};
 	}
 }
