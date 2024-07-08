@@ -4,6 +4,7 @@ import com.example.one.model.Task;
 import com.example.one.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,41 +14,47 @@ import java.util.List;
 public class TaskController {
 
     @Autowired
-     private TaskService service;
+    private TaskService service;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Task createTask (@RequestBody Task task){
+    @PreAuthorize("hasRole('ADMIN')")
+    public Task createTask(@RequestBody Task task) {
         return service.addTask(task);
     }
 
     @GetMapping
-    public List<Task> getTasks(){
-
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<Task> getTasks() {
         return service.findAllTasks();
     }
 
     @GetMapping("/{taskId}")
-    public Task getTask (@PathVariable String taskId){
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public Task getTask(@PathVariable String taskId) {
         return service.getTaskByTaskId(taskId);
     }
 
     @GetMapping("/severity/{severity}")
-    public List<Task> findTaskBySeverity(@PathVariable int severity){
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<Task> findTaskBySeverity(@PathVariable int severity) {
         return service.getTaskBySeverity(severity);
     }
 
     @GetMapping("/assignee/{assignee}")
-    public List<Task> getAssignee(@PathVariable String assignee){
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public List<Task> getAssignee(@PathVariable String assignee) {
         return service.getTaskByAssignee(assignee);
     }
 
     @PutMapping("/{taskId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public Task updateTask(@PathVariable String taskId, @RequestBody Task task) {
-       return service.updateTask(task);
+        return service.updateTask(task);
     }
 
     @DeleteMapping("/{taskId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public String deleteTask(@PathVariable String taskId) {
         return service.deleteTask(taskId);
     }
