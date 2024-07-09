@@ -1,6 +1,6 @@
 package com.example.one;
 
-import com.example.one.model.Task;
+import com.example.one.controller.UserController;
 import com.example.one.model.User;
 import com.example.one.repository.UserRepository;
 import com.example.one.service.TaskService;
@@ -18,30 +18,34 @@ import java.util.Arrays;
 @Slf4j
 public class OneApplication {
 
-
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+	@Autowired
+	public UserController userController;
 
 	public static void main(String[] args) {
 		SpringApplication.run(OneApplication.class, args);
 	}
 
+	// CommandLineRunner to initialize users
 	@Bean
-	CommandLineRunner run(UserRepository userRepository) {
+	CommandLineRunner initializeUsers(UserRepository userRepository) {
 		return args -> {
-			userRepository.deleteAll();
-			userRepository.save(new User(null, "admin", passwordEncoder.encode("adminPass"), Arrays.asList("ADMIN")));
-			userRepository.save(new User(null, "user", passwordEncoder.encode("userPass"), Arrays.asList("USER")));
+			User user = new User("1", "john_doe", "password123", Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
+			userController.registerUser(user);
+//			userRepository.deleteAll();
+//			userRepository.save(new User(null, "admin", passwordEncoder.encode("adminPass"), Arrays.asList("ADMIN")));
+//			userRepository.save(new User(null, "user", passwordEncoder.encode("userPass"), Arrays.asList("USER")));
 		};
 	}
 
+	// CommandLineRunner for TaskService or any other initializations
 	@Bean
-	CommandLineRunner run(TaskService taskService) {
+	CommandLineRunner initializeOtherServices(TaskService taskService) {
 		return args -> {
 			log.info("Application started");
-
-
+			// Additional initialization logic if needed
 		};
 	}
 }

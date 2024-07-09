@@ -25,7 +25,7 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @GetMapping("/{username}")
+    @GetMapping("/users/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable String username) {
         User user = userRepository.findByUsername(username);
         if (user != null) {

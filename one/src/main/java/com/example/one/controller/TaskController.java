@@ -18,43 +18,43 @@ public class TaskController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Task createTask(@RequestBody Task task) {
         return service.addTask(task);
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public List<Task> getTasks() {
         return service.findAllTasks();
     }
 
     @GetMapping("/{taskId}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public Task getTask(@PathVariable String taskId) {
         return service.getTaskByTaskId(taskId);
     }
 
     @GetMapping("/severity/{severity}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public List<Task> findTaskBySeverity(@PathVariable int severity) {
         return service.getTaskBySeverity(severity);
     }
 
     @GetMapping("/assignee/{assignee}")
-    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
     public List<Task> getAssignee(@PathVariable String assignee) {
         return service.getTaskByAssignee(assignee);
     }
 
     @PutMapping("/{taskId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Task updateTask(@PathVariable String taskId, @RequestBody Task task) {
         return service.updateTask(task);
     }
 
     @DeleteMapping("/{taskId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public String deleteTask(@PathVariable String taskId) {
         return service.deleteTask(taskId);
     }
